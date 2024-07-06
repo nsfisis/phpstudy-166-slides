@@ -1,4 +1,4 @@
-FROM amutake/satysfi
+FROM amutake/satysfi:0.0.11
 
 RUN opam update && \
     opam install satysfi-base

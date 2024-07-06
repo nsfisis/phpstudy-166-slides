@@ -40,10 +40,11 @@ document '<
 
   +make-title(|
     title = {
-      |TODO
+      |PHPerKaigi 2024 で発表した
+      |WebAssembly ランタイムのその後
       |};
     author = {|nsfisis (いまむら)|};
-    date = {|第TODO回PHP勉強会＠東京|};
+    date = {|第166回PHP勉強会＠東京|};
   |);
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
