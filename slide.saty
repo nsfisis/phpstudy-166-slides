@@ -29,6 +29,12 @@ let-block +code-block-php source =
     )(source);
   >
 
+let set-font-metrics default-config fsize ctx =
+  ctx |> default-config
+      |> set-font-size fsize
+      |> set-paragraph-margin (fsize *' 0.6) (fsize *' 0.6)
+      |> set-leading (fsize *' 1.4)
+
 open FigBox
 in
 
@@ -67,8 +73,202 @@ document '<
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  +frame{まとめ}<
-    +p{TODO}
+  +set-config(|
+    SlydifiThemeAkasaka.default-config with
+    font-normal = set-font-metrics SlydifiThemeAkasaka.default-config#font-normal 24pt;
+  |);
+
+
+  +frame{前回までのあらすじ}<
+    +p{前回までのあらすじ}
+  >
+
+  +frame{WebAssembly とは}<
+    +listing{
+      * Wasm とも
+      * ブラウザなどで実行できるポータブルな仮想命令セット
+      * 元々のモチベーション: ブラウザでの高速な処理
+      * ブラウザ以外の環境でも動く
+    }
+  >
+
+  +frame{Emscripten}<
+    +listing{
+      * C/C++ のソースコードを wasm に変換
+        ** LLVM を使う言語
+      * C/C++ で書かれた膨大な資産をブラウザなどの上で動かせる
+    }
+  >
+
+  +frame{Wasm の活用例}<
+    +listing{
+      * PHP の処理系は C で書かれている
+      * Emscripten を使って wasm に変換できる
+      * Wasm に変換すると PHP の処理系をブラウザなどの上で動かせる
+    }
+  >
+
+  +frame{PHP runtime on wasm runtime}<
+    +p{PHPerKaigi 2024 で発表}
+    +listing{
+      * PHP 処理系
+      * の上で動く PHP 製の wasm 処理系 (自作ランタイム)
+      * の上で動く Emscripten で wasm に変換された PHP 処理系
+      * の上で動く \code(`echo "Hello, World!\n";`);
+    }
+    +p{オーバヘッドが酷すぎて実行に 30 秒かかる}
+  >
+
+  +frame{前回までのあらすじ終わり}<
+    +p{前回までのあらすじ終わり}
+  >
+
+  +frame{PHPerKaigi 2024 にて}<
+    +listing{
+      * 「RubyVM を PHP で実装する〜Hello World を出力するまで」
+      * めもりーさんの発表
+      * PHP で実装された Ruby の VM
+    }
+  >
+
+  +frame{PHPerKaigi 2024 にて}<
+    +listing{
+      * 「RubyVM を PHP で実装する〜Hello World を出力するまで」
+      * めもりーさんの発表
+      * PHP で実装された Ruby の VM
+    }
+    +p{}
+    +p{お？}
+  >
+
+  +frame{これを......}<
+    +listing{
+      * PHP 処理系
+      * の上で動く PHP 製の wasm 処理系 (自作ランタイム)
+      * の上で動く Emscripten で wasm に変換された PHP 処理系
+      * の上で動く \code(`echo "Hello, World!\n";`);
+    }
+    +p{}
+    +listing{
+      * PHP 処理系
+      * の上で動く RubyVM (めもりーさん作)
+      * の上で動く \code(`puts "Hello, World!"`);
+    }
+  >
+
+  +frame{こうしたら？}<
+    +listing{
+      * PHP 処理系
+      * の上で動く PHP 製の wasm 処理系 (自作ランタイム)
+      * の上で動く Emscripten で wasm に変換された PHP 処理系
+      * の上で動く RubyVM (めもりーさん作)
+      * の上で動く \code(`puts "Hello, World!"`);
+    }
+  >
+
+  +frame{必要なこと}<
+    +listing{
+      * パフォーマンス改善
+        ** Hello, World! に 30秒かかるのに RubyVM は動かせない
+      * Wasm 仕様への準拠
+        ** PHPerKaigi でのデモを動かすためだけのやっつけ実装
+      * Emscripten との戦い
+        ** 後述
+    }
+  >
+
+  +frame{パフォーマンス改善}<
+    +listing{
+      * Ya8 で発表
+      * PHPerKaigi 時点から 10 倍ほど高速化
+        * 33 秒 =\> 3 秒を切る
+        * 2.2 GiB =\> 308 MiB
+    }
+  >
+
+  +frame{公式のテストを通す}<
+    +listing{
+      * WebAssembly には公式のテストスイートがある
+      * 元々はほぼ通らなかった
+        ** 15 \% =\> 85 \%
+    }
+  >
+
+  +frame{公式のテストを通す}<
+    +listing{
+      * WebAssembly には公式のテストスイートがある
+      * 元々はほぼ通らなかった
+        ** 15 \% =\> 85 \%
+      * とんでもないバグが多数
+    }
+  >
+
+  +frame{loop 命令}<
+    +code-block-php(`$m = count($blockType->params);
+$n = count($blockType->results);
+$label = new Label($n);`);
+    +p{}
+    +code-block-php(`$m = count($blockType->params);
+$n = count($blockType->results);
+$label = new Label($m);`);
+  >
+
+  +frame{f64.div}<
+    +code-block-php(`$return $x / $y;`);
+    +p{}
+    +code-block-php(`return fdiv($x, $y);`);
+    +p{}
+    +p{除算演算子は IEEE 754 に準拠していない}
+  >
+
+  +frame{Emscripten}<
+    +p{Emscripten と格闘する}
+  >
+
+  +frame{Emscripten}<
+    +listing{
+      * C/C++ のソースコードを wasm に変換
+        ** LLVM を使う言語
+    }
+  >
+
+  +frame{Emscripten}<
+    +listing{
+      * C/C++ のソースコードを wasm に変換
+        ** LLVM を使う言語
+      * Wasm 単体では外の世界に干渉できない
+        ** 標準入出力、ファイルシステム、etc
+        ** Wasm ランタイム側で実装して wasm へ渡す
+    }
+  >
+
+  +frame{Emscripten}<
+    +listing{
+      * C/C++ のソースコードを wasm に変換
+        ** LLVM を使う言語
+      * Wasm 単体では外の世界に干渉できない
+        ** 標準入出力、ファイルシステム、etc
+        ** Wasm ランタイム側で実装して wasm へ渡す
+        ** JavaScript 実装の関数を出力する
+          *** PHP からは扱えない
+    }
+  >
+
+  +frame{Emscripten}<
+    +listing{
+      * C/C++ のソースコードを wasm に変換
+        ** LLVM を使う言語
+      * Wasm 単体では外の世界に干渉できない
+        ** 標準入出力、ファイルシステム、etc
+        ** Wasm ランタイム側で実装して wasm へ渡す
+        ** JavaScript 実装の関数を出力する
+          *** PHP からは扱えない
+          *** Emscripten が生成した JS の関数群を PHP に移植する
+    }
+  >
+
+  +frame{RubyVM を動かす}<
+    +p{デモ}
   >
 
 >
