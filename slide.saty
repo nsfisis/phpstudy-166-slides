@@ -214,17 +214,37 @@ $label = new Label($m);`);
   >
 
   +frame{f64.div}<
-    +code-block-php(`return $x / $y;`);
+  >
+
+  +frame{f64.div}<
+    +p{PHP で 0.0 割る 0.0 は？}
+  >
+
+  +frame{f64.div}<
+    +p{PHP で 0.0 割る 0.0 は？}
+    +enumerate{
+      * NaN (Not a Number)
+      * Infinity (正の無限大)
+      * -Infinity (負の無限大)
+    }
+  >
+
+  +frame{f64.div}<
+    +p{PHP で 0.0 割る 0.0 は？}
+    +enumerate{
+      * NaN (Not a Number)
+      * Infinity (正の無限大)
+      * -Infinity (負の無限大)
+      * Fatal error
+    }
     +p{}
-    +code-block-php(`return fdiv($x, $y);`);
+    +p{除算演算子は IEEE 754 に準拠していない}
   >
 
   +frame{f64.div}<
     +code-block-php(`return $x / $y;`);
     +p{}
     +code-block-php(`return fdiv($x, $y);`);
-    +p{}
-    +p{除算演算子は IEEE 754 に準拠していない}
   >
 
   +frame{Emscripten}<
