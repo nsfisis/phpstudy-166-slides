@@ -214,7 +214,13 @@ $label = new Label($m);`);
   >
 
   +frame{f64.div}<
-    +code-block-php(`$return $x / $y;`);
+    +code-block-php(`return $x / $y;`);
+    +p{}
+    +code-block-php(`return fdiv($x, $y);`);
+  >
+
+  +frame{f64.div}<
+    +code-block-php(`return $x / $y;`);
     +p{}
     +code-block-php(`return fdiv($x, $y);`);
     +p{}
